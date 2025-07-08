@@ -20,6 +20,12 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet());
 app.use(compression());
 
+
+const allowedOrigins = [
+  'https://stokkerdev.github.io',
+  'https://stokkerdev.github.io/age_of_araganes/'
+];
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
@@ -30,10 +36,16 @@ app.use('/api/', limiter);
 
 // CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
-  credentials: true
+  origin: function(origin, callback){
+    // Permitir peticiones sin origin (como curl o Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
-
 // Middleware para parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
