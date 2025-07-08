@@ -23,7 +23,8 @@ app.use(compression());
 
 const allowedOrigins = [
   'https://stokkerdev.github.io',
-  'https://stokkerdev.github.io/age_of_araganes/'
+  'https://stokkerdev.github.io/age_of_araganes/',
+  'http://localhost:5500',
 ];
 
 // Rate limiting
