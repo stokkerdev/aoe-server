@@ -20,10 +20,13 @@ const playerUpdateSchema = Joi.object({
 
 // Esquema de validación para partidas
 const matchSchema = Joi.object({
+  phaseId: Joi.string().default('fase2'),
   date: Joi.date().required(),
   duration: Joi.number().integer().min(10).max(300).required(),
   map: Joi.string().min(2).max(50).required(),
   gameMode: Joi.string().valid('FFA', 'Team', 'Wonder').default('FFA'),
+  adminNotes: Joi.string().max(1000).allow(''),
+  createdBy: Joi.string().max(50).default('admin'),
   players: Joi.array().items(
     Joi.object({
       playerId: Joi.string().required(),
@@ -38,7 +41,7 @@ const matchSchema = Joi.object({
       finalPosition: Joi.number().integer().min(1).required()
     })
   ).min(4).max(8).required(),
-  notes: Joi.string().max(500).allow('')
+  notes: Joi.string().max(500).allow('').optional()
 });
 
 // Middleware de validación

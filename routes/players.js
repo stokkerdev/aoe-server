@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
 // GET /api/players/:id - Obtener un jugador específico
 router.get('/:id', async (req, res) => {
   try {
-    const player = await Player.findOne({ playerId: req.params.id }).select('-__v');
+    const player = await Player.findOne({ id: req.params.id }).select('-__v');
     
     if (!player) {
       return res.status(404).json({
@@ -75,7 +75,7 @@ router.get('/:id', async (req, res) => {
 // POST /api/players - Crear nuevo jugador
 router.post('/', validatePlayer, async (req, res) => {
   try {
-    const existingPlayer = await Player.findOne({ playerId: req.body.playerId });
+    const existingPlayer = await Player.findOne({ id: req.body.playerId });
     
     if (existingPlayer) {
       return res.status(400).json({
@@ -84,7 +84,10 @@ router.post('/', validatePlayer, async (req, res) => {
       });
     }
     
-    const player = new Player(req.body);
+    const player = new Player({
+      ...req.body,
+      id: req.body.playerId
+    });
     await player.save();
     
     res.status(201).json({
@@ -105,7 +108,7 @@ router.post('/', validatePlayer, async (req, res) => {
 router.put('/:id', validatePlayerUpdate, async (req, res) => {
   try {
     const player = await Player.findOneAndUpdate(
-      { playerId: req.params.id },
+      { id: req.params.id },
       req.body,
       { new: true, runValidators: true }
     ).select('-__v');
@@ -134,7 +137,7 @@ router.put('/:id', validatePlayerUpdate, async (req, res) => {
 // DELETE /api/players/:id - Eliminar jugador
 router.delete('/:id', async (req, res) => {
   try {
-    const player = await Player.findOneAndDelete({ playerId: req.params.id });
+    const player = await Player.findOneAndDelete({ id: req.params.id });
     
     if (!player) {
       return res.status(404).json({
@@ -159,7 +162,7 @@ router.delete('/:id', async (req, res) => {
 // GET /api/players/:id/stats - Obtener estadísticas detalladas de un jugador
 router.get('/:id/stats', async (req, res) => {
   try {
-    const player = await Player.findOne({ playerId: req.params.id }).select('-__v');
+    const player = await Player.findOne({ id: req.params.id }).select('-__v');
     
     if (!player) {
       return res.status(404).json({
@@ -209,7 +212,7 @@ router.get('/leaderboard/ranking', async (req, res) => {
     const leaderboard = await Player.find({ status: 'active' })
       .sort({ points: -1, wins: -1, matches: 1 })
       .limit(parseInt(limit))
-      .select('playerId name points wins matches winRatio avatar -_id');
+      .select('id name points wins matches winRatio avatar -_id');
     
     const leaderboardWithRank = leaderboard.map((player, index) => ({
       ...player.toObject(),

@@ -89,7 +89,7 @@ router.post('/', validateMatch, async (req, res) => {
     
     // Validar que todos los jugadores existan
     const playerIds = players.map(p => p.playerId);
-    const existingPlayers = await Player.find({ playerId: { $in: playerIds } });
+    const existingPlayers = await Player.find({ id: { $in: playerIds } });
     
     if (existingPlayers.length !== playerIds.length) {
       return res.status(400).json({
@@ -123,7 +123,7 @@ router.post('/', validateMatch, async (req, res) => {
     
     // Actualizar estadísticas de cada jugador
     for (const playerData of playersWithPoints) {
-      const player = await Player.findOne({ playerId: playerData.playerId });
+      const player = await Player.findOne({ id: playerData.playerId });
       if (player) {
         // Actualizar estadísticas del jugador
         player.updateStatsFromMatch({

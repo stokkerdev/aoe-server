@@ -43,6 +43,10 @@ app.use(cors({
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     } else {
+      // Permitir localhost para desarrollo
+      if (origin && origin.includes('localhost')) {
+        return callback(null, true);
+      }
       return callback(new Error('Not allowed by CORS'));
     }
   }
