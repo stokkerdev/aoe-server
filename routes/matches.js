@@ -85,7 +85,7 @@ router.get('/:id', async (req, res) => {
 // POST /api/matches - Crear nueva partida
 router.post('/', validateMatch, async (req, res) => {
   try {
-    const { date, duration, map, players, gameMode = 'FFA', notes } = req.body;
+    const { date, duration, map, players, gameMode = 'FFA', notes, phaseId = 'fase2', adminNotes, createdBy = 'admin' } = req.body;
     
     // Validar que todos los jugadores existan
     const playerIds = players.map(p => p.playerId);
@@ -107,13 +107,16 @@ router.post('/', validateMatch, async (req, res) => {
     
     // Crear la partida
     const match = new Match({
+      phaseId,
       date: new Date(date),
       duration,
       map,
       gameMode,
       totalPlayers,
       players: playersWithPoints,
-      notes
+      notes,
+      adminNotes,
+      createdBy
     });
     
     await match.save();

@@ -12,6 +12,7 @@ require('dotenv').config();
 const playerRoutes = require('./routes/players');
 const matchRoutes = require('./routes/matches');
 const statsRoutes = require('./routes/stats');
+const phaseRoutes = require('./routes/phases');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,8 +24,7 @@ app.use(compression());
 
 const allowedOrigins = [
   'https://stokkerdev.github.io',
-  'https://stokkerdev.github.io/age_of_araganes/',
-  'http://localhost:5500',
+  'https://stokkerdev.github.io/age_of_araganes/'
 ];
 
 // Rate limiting
@@ -76,6 +76,7 @@ app.use(express.static(path.join(__dirname, '..')));
 app.use('/api/players', playerRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/phases', phaseRoutes);
 
 // Ruta de salud del servidor
 app.get('/api', (req, res) => {

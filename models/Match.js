@@ -22,6 +22,11 @@ const playerMatchDataSchema = new mongoose.Schema({
 }, { _id: false });
 
 const matchSchema = new mongoose.Schema({
+  phaseId: {
+    type: String,
+    required: true,
+    default: 'fase1'
+  },
   date: { 
     type: Date, 
     required: true 
@@ -62,6 +67,14 @@ const matchSchema = new mongoose.Schema({
   notes: {
     type: String,
     maxlength: 500
+  },
+  createdBy: {
+    type: String,
+    default: 'system'
+  },
+  adminNotes: {
+    type: String,
+    maxlength: 1000
   }
 }, {
   timestamps: true,
